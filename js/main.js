@@ -77,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             return `0${num}`;
         }
+        else if(num < 0)
+        {
+            return '00';
+        }
         else
         {
             return num;
@@ -114,4 +118,78 @@ document.addEventListener('DOMContentLoaded', () => {
     // запуск  и передача элемента поиска и дата окончания
     getTime('#timer', expirationDate);
     // Timer end
+
+    // modal display start
+
+    // получаем кнопки вызова окна табо
+    let discripcionBtnAll = document.querySelectorAll('[data-open]');
+    // получаем класс самого окна
+    let overlay = document.querySelector('.overlay');
+    //получаем класс закрытия окна
+    let overlayCloseBtn = document.querySelector('[data-close]');
+
+    // ф-я скрытия окна
+    function closeOverlay()
+    {
+        overlay.style.display = 'none';
+    }
+
+    // ф-я показа окна
+    function openOverlay()
+    {
+        overlay.style.display = 'flex';
+    }
+
+    // ф-я возращения скролла
+    function scrollOn()
+    {
+        // пустая так как браузер сам решит что подставить
+        document.body.style.overflow = '';
+    }
+
+    // показываем окно при клике
+    discripcionBtnAll.forEach(btn => {
+        // вешаем события клика на кнокпи
+        btn.addEventListener('click', () => {
+            openOverlay();
+            // убираем скролл
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // закрываем при нажатии на крест
+    overlayCloseBtn.addEventListener('click', () => {
+        closeOverlay();
+        scrollOn();
+    });
+
+    // закрываем при нажатии на подложку
+    overlay.addEventListener('click', (event) => {
+        // проверка куда нажал пользователь c переменной
+        console.log(event.target);
+        if(event.target == overlay)
+        {
+            closeOverlay();
+            scrollOn();
+        }
+    });
+
+    // делаем вывод окна при входе на сайт через 5 сек
+    const timerOverlay = setTimeout(openOverlay, 5000);
+
+    // ф-я проверки сколько проскролили пользователь
+    function showScrollOverlay()
+    {
+        // проверяем прошел ли он до конца страницы
+        if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight)
+        {
+            openOverlay();
+            // убираем бесконечный вывод при скролле
+            window.removeEventListener('scroll', showScrollOverlay);
+        }
+    }
+
+    // выводим окно при скроле когда пользователь дошел до саиого низа
+    window.addEventListener('scroll', showScrollOverlay);
+    // modal display end
 });
